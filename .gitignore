@@ -1,0 +1,11 @@
+[Bb]in/
+
+[Oo]bj/
+
+./appsettings.Development.json
+
+.vs/
+
+./Perfume_Store_Activity_Management_Backend.csproj
+
+*.sln
