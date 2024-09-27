@@ -1,8 +1,27 @@
 using Microsoft.EntityFrameworkCore;
+using Perfume_Store_Activity_Management_Backend.src.Application.Services;
 using Perfume_Store_Activity_Management_Backend.src.Infrastructure.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+      builder =>
+      {
+          builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+      });
+    options.AddDefaultPolicy(
+      builder =>
+      {
+          builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+      });
+});
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -17,26 +36,17 @@ builder.Services.AddDbContext<PerfumeStoreDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection"));
 });
 
-var app = builder.Build();
+//Auto Mapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-//CORS
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("AllowAllOrigins",
-//      builder =>
-//      {
-//          builder.AllowAnyOrigin()
-//                .AllowAnyMethod()
-//                .AllowAnyHeader();
-//      });
-//    options.AddDefaultPolicy(
-//      builder =>
-//      {
-//          builder.AllowAnyOrigin()
-//                .AllowAnyMethod()
-//                .AllowAnyHeader();
-//      });
-//});
+//Services
+builder.Services.AddScoped<IPerfumeService, PerfumeService>();
+
+builder.Services.AddControllers();
+builder.Services.AddLogging();
+
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
