@@ -26,6 +26,6 @@
 
         public string BaseNote { get; set; } = null!;
 
-        public string PerfumeEditions { get; set; } = null!;
+        //public string PerfumeEditions { get; set; } = null!;
     }
 }

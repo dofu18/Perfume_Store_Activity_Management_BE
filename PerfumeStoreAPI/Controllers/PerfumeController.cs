@@ -90,12 +90,46 @@ namespace PerfumeStore.API.Controllers
                 TopNote = req.TopNote,
                 MiddleNote = req.MiddleNote,
                 BaseNote = req.BaseNote,
-                PerfumeEditions = req.PerfumeEditions,
+                //PerfumeEditions = req.PerfumeEditions,
             };
 
             var rs = await _perfumeService.InsertPerfumeAsync(perfumeModel);
             perfumeModel.PerfumeId = rs;
             return CreatedAtAction(nameof(GetPerfumeById), new {id = perfumeModel.PerfumeId}, perfumeModel );
+        }
+
+        [HttpPut("perfume/{id}")]
+        public async Task<IActionResult> UpdatePerfume (Guid id, PerfumeRequestModel req)
+        {
+            var perfumeModel = new PerfumeModel
+            {
+                ViewCount = req.ViewCount,
+                Origin = req.Origin,
+                ReleaseYear = req.ReleaseYear,
+                Concentration = req.Concentration,
+                Bartender = req.Bartender,
+                FlavorGroup = req.FlavorGroup,
+                Capacity = req.Capacity,
+                Price = req.Price,
+                Discount = req.Discount,
+                TopNote = req.TopNote,
+                MiddleNote = req.MiddleNote,
+                BaseNote = req.BaseNote,
+            };
+
+            var success = await _perfumeService.UpdatePerfumeAsync(id, perfumeModel);
+            if (!success) return NotFound();
+
+            return NoContent();
+        }
+
+        [HttpDelete("perfume/{id}")]
+        public async Task<IActionResult> DeletePerfume (Guid id)
+        {
+            var success = await _perfumeService.DeletePerfumeAsync(id);
+            if (!success ) return NotFound();
+
+            return NoContent();
         }
     }
 }
