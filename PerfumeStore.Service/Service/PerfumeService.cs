@@ -44,7 +44,7 @@ namespace PerfumeStore.Service.Service
             });
         }
 
-        public async Task<PerfumeModel> GetPerfumeByIdAsync(int id)
+        public async Task<PerfumeModel> GetPerfumeByIdAsync(Guid id)
         {
             var perfume = await _unitOfWork.Perfumes.GetByIdAsync(id);
             if (perfume == null) return null;
@@ -91,8 +91,10 @@ namespace PerfumeStore.Service.Service
 
         public async Task<Guid> InsertPerfumeAsync(PerfumeModel perfumeModel)
         {
+            //if (perfumeModel.PerfumeId == Guid.Empty) perfumeModel.PerfumeId = Guid.NewGuid();
             var perfumeEntity = new Perfume
             {
+                PerfumeId = Guid.NewGuid(),
                 ViewCount = perfumeModel.ViewCount,
                 Origin = perfumeModel.Origin,
                 ReleaseYear = perfumeModel.ReleaseYear,
