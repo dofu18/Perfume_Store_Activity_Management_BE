@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+
 namespace PerfumeStore.Service.Service
 {
     public class PerfumeService
@@ -22,26 +24,29 @@ namespace PerfumeStore.Service.Service
         }
 
 
-        public async Task<IEnumerable<PerfumeModel>> GetPerfumesAsync()
+        public async Task<PagedResult<Perfume>> GetPerfumesAsync(int pageNumber, int pageSize)
         {
-            var perfumes = await _unitOfWork.Perfumes.GetAllAsync();
-            return perfumes.Select(perfume => new PerfumeModel
-            {
-                PerfumeId = perfume.PerfumeId,
-                ViewCount = perfume.ViewCount,
-                Origin = perfume.Origin,
-                ReleaseYear = perfume.ReleaseYear,
-                Concentration = perfume.Concentration,
-                Bartender = perfume.Bartender,
-                FlavorGroup = perfume.FlavorGroup,
-                Capacity = perfume.Capacity,
-                Price = perfume.Price,
-                Discount = perfume.Discount,
-                TopNote = perfume.TopNote,
-                MiddleNote = perfume.MiddleNote,
-                BaseNote = perfume.BaseNote,
-                //PerfumeEditions = perfume.PerfumeEditions,
-            });
+            //var perfumes = await _unitOfWork.Perfumes.GetAllAsync();
+            //return perfumes.Select(perfume => new PerfumeModel
+            //{
+            //    PerfumeId = perfume.PerfumeId,
+            //    ViewCount = perfume.ViewCount,
+            //    Origin = perfume.Origin,
+            //    ReleaseYear = perfume.ReleaseYear,
+            //    Concentration = perfume.Concentration,
+            //    Bartender = perfume.Bartender,
+            //    FlavorGroup = perfume.FlavorGroup,
+            //    Capacity = perfume.Capacity,
+            //    Price = perfume.Price,
+            //    Discount = perfume.Discount,
+            //    TopNote = perfume.TopNote,
+            //    MiddleNote = perfume.MiddleNote,
+            //    BaseNote = perfume.BaseNote,
+            //    //PerfumeEditions = perfume.PerfumeEditions,
+            //});
+            var (perfumes, totalCount) = await _unitOfWork.GetPaginatedPerfumesAsync(pageNumber, pageSize);
+
+            return new PagedResult<Perfume>(perfumes, totalCount);
         }
 
         public async Task<PerfumeModel> GetPerfumeByIdAsync(Guid id)

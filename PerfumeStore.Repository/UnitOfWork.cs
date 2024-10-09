@@ -31,6 +31,13 @@ namespace PerfumeStore.Repository
             }
         }
 
+        public async Task<(List<Perfume>, int)> GetPaginatedPerfumesAsync(int pageNumber, int pageSize)
+        {
+            var perfumes = await Perfumes.GetAllAsync(pageNumber, pageSize);
+            var totalCount = await Perfumes.GetAllCountAsync(); // Get total count for pagination
+            return (perfumes, totalCount); // Return both paginated data and total count
+        }
+
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
