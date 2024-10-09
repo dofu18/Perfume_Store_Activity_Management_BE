@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PerfumeStore.API.RequestModel;
 using PerfumeStore.API.ResponseModel;
+using PerfumeStore.API.ResponseModel.Perfume;
 using PerfumeStore.Repository.Models;
 using PerfumeStore.Service.BusinessModel;
 using PerfumeStore.Service.Service;
@@ -22,26 +23,38 @@ namespace PerfumeStore.API.Controllers
         }
 
         [HttpGet("perfumes")]
-        public async Task<ActionResult<IEnumerable<PerfumeResponseModel>>> GetPerfume()
+        public async Task<IActionResult> GetPerfume([FromQuery] int pageNumber , int pageSize)
         {
-            var perfumes = await _perfumeService.GetPerfumesAsync();
-            var response = perfumes.Select(perfumes => new PerfumeResponseModel
-            {
-                PerfumeId = perfumes.PerfumeId,
-                ViewCount = perfumes.ViewCount,
-                Origin = perfumes.Origin,
-                ReleaseYear = perfumes.ReleaseYear,
-                Concentration = perfumes.Concentration,
-                Bartender = perfumes.Bartender,
-                FlavorGroup = perfumes.FlavorGroup,
-                Capacity = perfumes.Capacity,   
-                Price = perfumes.Price,
-                Discount = perfumes.Discount,
-                TopNote = perfumes.TopNote,
-                MiddleNote = perfumes.MiddleNote,
-                BaseNote = perfumes.BaseNote,
-                PerfumeEditions = perfumes.PerfumeEditions,
-            });
+            //var perfumes = await _perfumeService.GetPerfumesAsync();
+            //var response = perfumes.Select(perfumes => new PerfumeResponseModel
+            //{
+            //    PerfumeId = perfumes.PerfumeId,
+            //    ViewCount = perfumes.ViewCount,
+            //    Origin = perfumes.Origin,
+            //    ReleaseYear = perfumes.ReleaseYear,
+            //    Concentration = perfumes.Concentration,
+            //    Bartender = perfumes.Bartender,
+            //    FlavorGroup = perfumes.FlavorGroup,
+            //    Capacity = perfumes.Capacity,   
+            //    Price = perfumes.Price,
+            //    Discount = perfumes.Discount,
+            //    TopNote = perfumes.TopNote,
+            //    MiddleNote = perfumes.MiddleNote,
+            //    BaseNote = perfumes.BaseNote,
+            //    PerfumeEditions = perfumes.PerfumeEditions,
+            //});
+
+            //return Ok(response);
+            // Get paginated result from the service
+            var pagedResult = await _perfumeService.GetPerfumesAsync(pageNumber, pageSize);
+
+            // Ensure you pass all required parameters to the PaginationResponseModel constructor
+            var response = new PaginationResponseModel<Perfume>(
+                pagedResult.Data,            // Pass the data (list of perfumes)
+                pagedResult.TotalCount,      // Pass the total count
+                pageNumber,                  // Current page number
+                pageSize                     // Page size
+            );
 
             return Ok(response);
         }

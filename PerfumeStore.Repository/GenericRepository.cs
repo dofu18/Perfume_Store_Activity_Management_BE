@@ -27,9 +27,16 @@ namespace PerfumeStore.Repository
         {
             return _context.Set<T>().ToList();
         }
-        public async Task<List<T>> GetAllAsync()
+        public async Task<List<T>> GetAllAsync(int pageNumber, int pageSize)
         {
-            return await _context.Set<T>().ToListAsync();
+            return await _context.Set<T>()
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+        public async Task<int> GetAllCountAsync()
+        {
+            return await _context.Set<T>().CountAsync();
         }
         public void Create(T entity)
         {
