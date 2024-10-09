@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using PerfumeStore.API.RequestModel;
 using PerfumeStore.API.ResponseModel;
@@ -22,7 +23,9 @@ namespace PerfumeStore.API.Controllers
             _perfumeService = perfumeService;
         }
 
+
         [HttpGet("perfumes")]
+        [Authorize]
         public async Task<IActionResult> GetPerfume([FromQuery] int pageNumber , int pageSize)
         {
             //var perfumes = await _perfumeService.GetPerfumesAsync();
