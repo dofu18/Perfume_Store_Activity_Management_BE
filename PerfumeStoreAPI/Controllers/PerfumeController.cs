@@ -26,40 +26,11 @@ namespace PerfumeStore.API.Controllers
 
         [HttpGet("perfumes")]
         [Authorize]
-        public async Task<IActionResult> GetPerfume([FromQuery] int pageNumber , int pageSize)
+        public IActionResult GetPerfume([FromQuery] string? search, [FromQuery] string? sortBy, [FromQuery] bool desc, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            //var perfumes = await _perfumeService.GetPerfumesAsync();
-            //var response = perfumes.Select(perfumes => new PerfumeResponseModel
-            //{
-            //    PerfumeId = perfumes.PerfumeId,
-            //    ViewCount = perfumes.ViewCount,
-            //    Origin = perfumes.Origin,
-            //    ReleaseYear = perfumes.ReleaseYear,
-            //    Concentration = perfumes.Concentration,
-            //    Bartender = perfumes.Bartender,
-            //    FlavorGroup = perfumes.FlavorGroup,
-            //    Capacity = perfumes.Capacity,   
-            //    Price = perfumes.Price,
-            //    Discount = perfumes.Discount,
-            //    TopNote = perfumes.TopNote,
-            //    MiddleNote = perfumes.MiddleNote,
-            //    BaseNote = perfumes.BaseNote,
-            //    PerfumeEditions = perfumes.PerfumeEditions,
-            //});
-
-            //return Ok(response);
             // Get paginated result from the service
-            var pagedResult = await _perfumeService.GetPerfumesAsync(pageNumber, pageSize);
-
-            // Ensure you pass all required parameters to the PaginationResponseModel constructor
-            var response = new PaginationResponseModel<Perfume>(
-                pagedResult.Data,            // Pass the data (list of perfumes)
-                pagedResult.TotalCount,      // Pass the total count
-                pageNumber,                  // Current page number
-                pageSize                     // Page size
-            );
-
-            return Ok(response);
+            var perfumes = _perfumeService.GetPerfumes(search, sortBy, desc, page, pageSize);
+            return Ok(perfumes);
         }
 
         [HttpGet("/perfume/{id}")]

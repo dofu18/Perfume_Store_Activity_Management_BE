@@ -11,6 +11,7 @@ namespace PerfumeStore.Repository
     {
         private PerfumeStoreActivityManagementContext _context;
         private GenericRepository<Perfume> _perfume;
+        private GenericRepository<User> _user;
 
         private bool disposed = false;
 
@@ -31,16 +32,26 @@ namespace PerfumeStore.Repository
             }
         }
 
-        public async Task<(List<Perfume>, int)> GetPaginatedPerfumesAsync(int pageNumber, int pageSize)
+        public GenericRepository<User> Users
         {
-            var perfumes = await Perfumes.GetAllAsync(pageNumber, pageSize);
-            var totalCount = await Perfumes.GetAllCountAsync(); // Get total count for pagination
-            return (perfumes, totalCount); // Return both paginated data and total count
+            get
+            {
+                if (this._user == null)
+                {
+                    this._user = new GenericRepository<User>(_context);
+                }
+                return _user;
+            }
         }
 
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
         }
 
 

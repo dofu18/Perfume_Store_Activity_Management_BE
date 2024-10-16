@@ -7,6 +7,7 @@ using PerfumeStore.Service.BusinessModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,32 +22,6 @@ namespace PerfumeStore.Service.Service
         public PerfumeService(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-        }
-
-
-        public async Task<PagedResult<Perfume>> GetPerfumesAsync(int pageNumber, int pageSize)
-        {
-            //var perfumes = await _unitOfWork.Perfumes.GetAllAsync();
-            //return perfumes.Select(perfume => new PerfumeModel
-            //{
-            //    PerfumeId = perfume.PerfumeId,
-            //    ViewCount = perfume.ViewCount,
-            //    Origin = perfume.Origin,
-            //    ReleaseYear = perfume.ReleaseYear,
-            //    Concentration = perfume.Concentration,
-            //    Bartender = perfume.Bartender,
-            //    FlavorGroup = perfume.FlavorGroup,
-            //    Capacity = perfume.Capacity,
-            //    Price = perfume.Price,
-            //    Discount = perfume.Discount,
-            //    TopNote = perfume.TopNote,
-            //    MiddleNote = perfume.MiddleNote,
-            //    BaseNote = perfume.BaseNote,
-            //    //PerfumeEditions = perfume.PerfumeEditions,
-            //});
-            var (perfumes, totalCount) = await _unitOfWork.GetPaginatedPerfumesAsync(pageNumber, pageSize);
-
-            return new PagedResult<Perfume>(perfumes, totalCount);
         }
 
         public async Task<PerfumeModel> GetPerfumeByIdAsync(Guid id)
@@ -70,6 +45,56 @@ namespace PerfumeStore.Service.Service
                 MiddleNote = perfume.MiddleNote,
                 BaseNote = perfume.BaseNote,
             };
+        }
+
+        public IEnumerable<Perfume> GetPerfumes(string search, string sortBy, bool desc, int page, int pageSize)
+        {
+            // Handle search (filter)
+            Expression<Func<Perfume, bool>> filter = null;
+            if (!string.IsNullOrEmpty(search))
+            {
+                filter = p => p.Bartender.Contains(search);  // Filter by name
+            }
+            else
+            {
+                // If no search term is provided, just return all records
+                filter = p => true;  // This will allow all results to be returned
+            }
+
+            // Handle sorting
+            Func<IQueryable<Perfume>, IOrderedQueryable<Perfume>> orderBy = null;
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                switch (sortBy.ToLower())
+                {
+                    case "bartender":
+                        orderBy = p => desc ? p.OrderByDescending(x => x.Bartender) : p.OrderBy(x => x.Bartender);
+                        break;
+                    case "price":
+                        orderBy = p => desc ? p.OrderByDescending(x => x.Price) : p.OrderBy(x => x.Price);
+                        break;
+                    default:
+                        orderBy = p => p.OrderBy(x => x.Bartender);  // Default sorting by name
+                        break;
+                }
+            }
+            else
+            {
+                // Default sorting if no sortBy is provided
+                orderBy = p => p.OrderBy(x => x.Bartender);  // Sorting by name if not specified
+            }
+
+            // Apply filtering
+            var perfumes = _unitOfWork.Perfumes.FindByCondition(filter);
+
+            // Apply sorting
+            if (orderBy != null)
+            {
+                perfumes = orderBy(perfumes);
+            }
+
+            // Apply paging
+            return perfumes.Skip((page - 1) * pageSize).Take(pageSize).ToList();
         }
 
         public async Task<bool> UpdatePerfumeAsync(Guid id, PerfumeModel perfumeModel)

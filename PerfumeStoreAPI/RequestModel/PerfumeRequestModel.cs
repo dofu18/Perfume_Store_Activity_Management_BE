@@ -1,6 +1,6 @@
 ﻿namespace PerfumeStore.API.RequestModel
 {
-    public class PerfumeRequestModel : PaginationRequestModel
+    public class PerfumeRequestModel
     {
         public int ViewCount { get; set; }
 

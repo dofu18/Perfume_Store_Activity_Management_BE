@@ -17,7 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Learning Management System", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Perfume Store Management System", Version = "v1" });
 
     // Add a bearer token to Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -109,6 +109,7 @@ builder.Services.AddHttpContextAccessor();
 //Service
 builder.Services.AddScoped<PerfumeService>();
 builder.Services.AddScoped<UnitOfWork>();
+builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 
