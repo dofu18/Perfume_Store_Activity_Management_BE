@@ -110,6 +110,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<PerfumeService>();
 builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 

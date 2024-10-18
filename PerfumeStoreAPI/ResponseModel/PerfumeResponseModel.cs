@@ -1,4 +1,4 @@
-﻿namespace PerfumeStore.API.ResponseModel.Perfume
+﻿namespace PerfumeStore.API.ResponseModel
 {
     public class PerfumeResponseModel
     {
@@ -31,8 +31,4 @@
         public string PerfumeEditions { get; set; } = null!;
     }
 
-    //public class PerfumeResp : PaginationResponseModel
-    //{
-    //    public List<PerfumeResponseModel> Data { get; set; } = null!;
-    //}
 }

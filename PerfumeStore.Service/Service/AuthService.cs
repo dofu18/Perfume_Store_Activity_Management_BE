@@ -53,7 +53,7 @@ namespace PerfumeStore.Service.Service
             return user;
         }
 
-        public async Task<BusinessModel.UserModel> AuthenticateGoogleUser(string email, string name)
+        public async Task<BusinessModel.UserAuthModel> AuthenticateGoogleUser(string email, string name)
         {
             var user = _unitOfWork.Users.GetByCondition(u => u.Email == email);
 
@@ -65,7 +65,7 @@ namespace PerfumeStore.Service.Service
                     RoleId = Guid.Parse("0ed0cc64-26a1-4b74-9a14-62f89e9401c0"), //User Role ID
                     Email = email,
                     FirstName = name,
-                    LastName = name,
+                    LastName = "",
                     Metadata = "",
                     Phone = "",
                     ProfileUrl = "",
@@ -80,14 +80,15 @@ namespace PerfumeStore.Service.Service
             else
             {
                 user.LastLoginAt = DateTime.UtcNow;
-                user.FirstName = name; // Optional: update name
-                user.LastName = name;
+                user.UpdatedAt = DateTime.UtcNow;
+                user.FirstName = name;
+                user.LastName = "";
                 _unitOfWork.Users.Update(user);
             }
 
             await _unitOfWork.SaveAsync();
 
-            return new UserModel
+            return new UserAuthModel
             {
                 Email = user.Email,
                 FirstName = user.FirstName,

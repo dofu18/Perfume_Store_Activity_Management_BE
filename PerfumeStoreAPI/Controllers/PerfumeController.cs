@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using PerfumeStore.API.RequestModel;
 using PerfumeStore.API.ResponseModel;
-using PerfumeStore.API.ResponseModel.Perfume;
 using PerfumeStore.Repository.Models;
 using PerfumeStore.Service.BusinessModel;
 using PerfumeStore.Service.Service;
@@ -22,7 +21,6 @@ namespace PerfumeStore.API.Controllers
         {
             _perfumeService = perfumeService;
         }
-
 
         [HttpGet("perfumes")]
         [Authorize]

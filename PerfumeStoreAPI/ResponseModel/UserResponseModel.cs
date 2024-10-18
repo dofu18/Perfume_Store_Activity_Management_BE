@@ -1,22 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PerfumeStore.Service.BusinessModel
+﻿namespace PerfumeStore.API.ResponseModel
 {
-    public class UserAuthModel
+    public class UserResponseModel
     {
-        public string Email { get; set; } = null!;
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public DateTime LastLoginAt { get; set; }
-    }
-
-    public class UserModel
-    {
-        public Guid? UserId { get; set; }
+        public Guid UserId { get; set; }
         public string Email { get; set; } = null!;
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
