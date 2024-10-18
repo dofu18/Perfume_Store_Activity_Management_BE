@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PerfumeStore.Repository;
-using PerfumeStore.Repository.Models;
+using PerfumeStore.Repository.Model;
 using PerfumeStore.Service.Service;
 using System.Text;
 
@@ -14,7 +15,34 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Perfume Store Management System", Version = "v1" });
+
+    // Add a bearer token to Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer"
+    });
+
+    // Require the bearer token for all API operations
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+      {
+          new OpenApiSecurityScheme
+          {
+              Reference = new OpenApiReference
+              {
+                  Type = ReferenceType.SecurityScheme,
+                  Id = "Bearer"
+              }
+          },
+          new string[] {}
+      }
+    });
+});
 
 // Add Google authentication
 builder.Services.AddAuthentication(options =>
@@ -67,15 +95,22 @@ builder.Services.AddCors(options =>
 //builder.Services.AddDbContext<PerfumeStoreActivityManagementContext>(options =>
 //options.UseSqlServer(connectionString));
 
-builder.Services.AddDbContext<PerfumeStoreActivityManagementContext>(options =>
+builder.Services.AddDbContext<PerfumeStoreContext>(options =>
 {
     Console.WriteLine($"Using ConnectionString: {builder.Configuration.GetConnectionString("DatabaseConnection")}");
     options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection"));
 });
 
+//Security scheme
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication("Bearer").AddBearerToken();
+builder.Services.AddHttpContextAccessor();
+
 //Service
 builder.Services.AddScoped<PerfumeService>();
 builder.Services.AddScoped<UnitOfWork>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 

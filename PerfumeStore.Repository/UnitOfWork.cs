@@ -1,4 +1,4 @@
-﻿using PerfumeStore.Repository.Models;
+﻿using PerfumeStore.Repository.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,38 +9,49 @@ namespace PerfumeStore.Repository
 {
     public class UnitOfWork : IDisposable
     {
-        private PerfumeStoreActivityManagementContext _context;
-        private GenericRepository<Perfume> _perfume;
+        private PerfumeStoreContext _context;
+        private GenericRepository<PerfumeProduct> _perfume;
+        private GenericRepository<User> _user;
 
         private bool disposed = false;
 
-        public UnitOfWork(PerfumeStoreActivityManagementContext context)
+        public UnitOfWork(PerfumeStoreContext context)
         {
             _context = context;
         }
 
-        public GenericRepository<Perfume> Perfumes
+        public GenericRepository<PerfumeProduct> Perfumes
         {
             get
             {
                 if (this._perfume == null)
                 {
-                    this._perfume = new GenericRepository<Perfume>(_context);
+                    this._perfume = new GenericRepository<PerfumeProduct>(_context);
                 }
                 return _perfume;
             }
         }
 
-        public async Task<(List<Perfume>, int)> GetPaginatedPerfumesAsync(int pageNumber, int pageSize)
+        public GenericRepository<User> Users
         {
-            var perfumes = await Perfumes.GetAllAsync(pageNumber, pageSize);
-            var totalCount = await Perfumes.GetAllCountAsync(); // Get total count for pagination
-            return (perfumes, totalCount); // Return both paginated data and total count
+            get
+            {
+                if (this._user == null)
+                {
+                    this._user = new GenericRepository<User>(_context);
+                }
+                return _user;
+            }
         }
 
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
         }
 
 

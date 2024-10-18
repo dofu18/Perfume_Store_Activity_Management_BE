@@ -1,6 +1,6 @@
-﻿namespace PerfumeStore.API.RequestModel
+﻿namespace PerfumeStore.API.ResponseModel
 {
-    public class PerfumeRequestModel
+    public class PerfumeResponseModel
     {
         public Guid PerfumeId { get; set; }
 
@@ -38,4 +38,5 @@
 
         public DateTime? DateAdded { get; set; }
     }
+
 }

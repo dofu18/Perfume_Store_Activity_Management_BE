@@ -5,23 +5,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PerfumeStore.Repository.Models;
+using PerfumeStore.Repository.Model;
+using System.Linq.Expressions;
 
 namespace PerfumeStore.Repository
 {
     public class GenericRepository<T> where T : class
     {
-        protected PerfumeStoreActivityManagementContext _context;
+        protected PerfumeStoreContext _context;
+        private readonly DbSet<T> _dbSet;
 
         public GenericRepository()
         {
-            _context ??= new PerfumeStoreActivityManagementContext();
+            _context ??= new PerfumeStoreContext();
         }
 
-        public GenericRepository(PerfumeStoreActivityManagementContext context)
+        public GenericRepository(PerfumeStoreContext context)
         {
             _context = context;
+            _dbSet = _context.Set<T>();
         }
+
+        // Get a single object based on a condition
+        public T GetByCondition(Expression<Func<T, bool>> expression)
+        {
+            return _dbSet.FirstOrDefault(expression);
+        }
+
+        
 
         public List<T> GetAll()
         {
@@ -149,6 +160,22 @@ namespace PerfumeStore.Repository
         {
             return (await GetByIdAsync(id)) is not null;
         }
+
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
+        {
+            return _dbSet.Where(expression);
+        }
+
+        public IQueryable<T> GetAllSorted<TKey>(Expression<Func<T, TKey>> keySelector, bool descending = false)
+        {
+            return descending ? _dbSet.OrderByDescending(keySelector) : _dbSet.OrderBy(keySelector);
+        }
+
+        public IQueryable<T> GetPaged(int pageNumber, int pageSize)
+        {
+            return _dbSet.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+        }
+
 
         #region Separating asign entity and save operators        
 

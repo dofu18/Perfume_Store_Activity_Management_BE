@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using PerfumeStore.Service.Service;
 
 namespace PerfumeStore.API.Controllers
 {
@@ -14,8 +15,11 @@ namespace PerfumeStore.API.Controllers
     {
         private readonly IConfiguration _config;
 
-        public AuthController(IConfiguration config)
+        private readonly AuthService _authService;
+
+        public AuthController(IConfiguration config, AuthService authService)
         {
+            _authService = authService;
             _config = config;
         }
 
@@ -35,17 +39,25 @@ namespace PerfumeStore.API.Controllers
         {
             var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
             if (result?.Principal == null)
-                return BadRequest();
+                return BadRequest("No principal found");
 
             // Extract user info from Google
             var claims = result.Principal.Claims.ToList();
             var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
             var name = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest("Email is required");
+            }
+
 
             // You can now check if the user exists in your DB or register a new user.
+            var user = await _authService.AuthenticateGoogleUser(email, name);
+
+
             // For this demo, we'll assume the user is valid and proceed with JWT token generation.
 
-            var jwtToken = GenerateJwtToken(email, name);
+            var jwtToken = GenerateJwtToken(user.Email, user.FirstName);
 
             return Ok(new
             {
@@ -78,5 +90,6 @@ namespace PerfumeStore.API.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
     }
 }
