@@ -92,5 +92,25 @@ namespace PerfumeStore.Service.Service
             // Apply Paging
             return users.Skip((page - 1) * pageSize).Take(pageSize).ToList();
         }
+
+        public async Task<bool> UpdateUserAsync(Guid id, UserModel userModel)
+        {
+            var userToUpdate = await _unitOfWork.Users.GetByIdAsync(id);
+
+            userToUpdate.FirstName = userModel.FirstName;
+            userToUpdate.LastName = userModel.LastName;
+            userToUpdate.Email = userModel.Email;
+            userToUpdate.PasswordHash = userModel.PasswordHash;
+            userToUpdate.Role = userModel.Role;
+            userToUpdate.Phone = userModel.Phone;
+            userToUpdate.ProfileUrl = userModel.ProfileUrl;
+            userToUpdate.Metadata = userModel.Metadata;
+            userToUpdate.Status = userModel.Status;
+            userToUpdate.UpdatedAt = DateTime.Now;
+
+            _unitOfWork.Users.Update(userToUpdate);
+            await _unitOfWork.SaveAsync();
+            return true;
+        }
     }
 }

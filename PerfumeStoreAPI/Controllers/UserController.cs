@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PerfumeStore.API.RequestModel;
 using PerfumeStore.API.ResponseModel;
 using PerfumeStore.Repository.Model;
+using PerfumeStore.Service.BusinessModel;
 using PerfumeStore.Service.Service;
 
 namespace PerfumeStore.API.Controllers
@@ -43,12 +45,38 @@ namespace PerfumeStore.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("users")]
+        [HttpGet("users/admin")]
         public IActionResult GetAllUsers([FromQuery] string? search, [FromQuery] string? sortBy, [FromQuery] bool desc, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             // Get paginated result from the service
             var users = _userService.GetAllUsers(search, sortBy, desc, page, pageSize);
             return Ok(users);
+        }
+
+        [HttpPut("users/{id}")]
+        public async Task<IActionResult> UpdateUser(Guid id, UserRequestModel req)
+        {
+            var userModel = new UserModel
+            {
+                Email = req.Email,
+                FirstName = req.FirstName,
+                LastName = req.LastName,
+                PasswordHash = req.PasswordHash,
+                Role = req.Role,
+                Phone = req.Phone,
+                ProfileUrl = req.ProfileUrl,
+                Metadata = req.Metadata,
+                Status = req.Status,
+                LastLogin = req.LastLogin,
+                CreatedAt = req.CreatedAt,
+                UpdatedAt = req.UpdatedAt,
+                DateCreated = req.DateCreated,
+            };
+
+            var success = await _userService.UpdateUserAsync(id, userModel);
+            if (!success) return NotFound();
+
+            return NoContent();
         }
     }
 

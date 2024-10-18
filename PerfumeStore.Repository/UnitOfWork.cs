@@ -12,12 +12,25 @@ namespace PerfumeStore.Repository
         private PerfumeStoreContext _context;
         private GenericRepository<PerfumeProduct> _perfume;
         private GenericRepository<User> _user;
+        private GenericRepository<Cart> _cart;
 
         private bool disposed = false;
 
         public UnitOfWork(PerfumeStoreContext context)
         {
             _context = context;
+        }
+
+        public GenericRepository<Cart> Carts
+        {
+            get
+            {
+                if (this._cart == null)
+                {
+                    this._cart = new GenericRepository<Cart>(_context);
+                }
+                return this._cart;
+            }
         }
 
         public GenericRepository<PerfumeProduct> Perfumes
