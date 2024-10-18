@@ -1,6 +1,13 @@
-﻿namespace PerfumeStore.API.RequestModel
+﻿using PerfumeStore.Repository.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PerfumeStore.Service.BusinessModel
 {
-    public class PerfumeRequestModel
+    public class PerfumeProductModel
     {
         public Guid PerfumeId { get; set; }
 

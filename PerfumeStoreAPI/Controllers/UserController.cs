@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PerfumeStore.API.ResponseModel;
-using PerfumeStore.Repository.Models;
+using PerfumeStore.Repository.Model;
 using PerfumeStore.Service.Service;
 
 namespace PerfumeStore.API.Controllers
@@ -28,13 +28,16 @@ namespace PerfumeStore.API.Controllers
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                PasswordHash = user.PasswordHash,
+                Role = user.Role,
                 Phone = user.Phone,
                 ProfileUrl = user.ProfileUrl,
                 Metadata = user.Metadata,
                 Status = user.Status,
-                LastLoginAt = user.LastLoginAt,
+                LastLogin = user.LastLogin,
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt,
+                DateCreated = user.DateCreated,
             };
 
             return Ok(response);

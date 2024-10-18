@@ -1,6 +1,6 @@
 ﻿using Google.Apis.Auth;
 using PerfumeStore.Repository;
-using PerfumeStore.Repository.Models;
+using PerfumeStore.Repository.Model;
 using PerfumeStore.Service.BusinessModel;
 using System;
 using System.Collections.Generic;
@@ -33,7 +33,7 @@ namespace PerfumeStore.Service.Service
             if (user != null)
             {
                 // User exists, update last login time
-                user.LastLoginAt = DateTime.Now;
+                user.LastLogin = DateTime.Now;
                 _unitOfWork.Users.Update(user);
             }
             else
@@ -43,7 +43,7 @@ namespace PerfumeStore.Service.Service
                 {
                     Email = payload.Email,
                     FirstName = payload.Name,
-                    LastLoginAt = DateTime.Now
+                    LastLogin = DateTime.Now
                 };
 
                 _unitOfWork.Users.Create(user);
@@ -59,27 +59,29 @@ namespace PerfumeStore.Service.Service
 
             if (user == null)
             {
-                user = new Repository.Models.User
+                user = new Repository.Model.User
                 {
                     UserId = Guid.NewGuid(),
-                    RoleId = Guid.Parse("0ed0cc64-26a1-4b74-9a14-62f89e9401c0"), //User Role ID
                     Email = email,
                     FirstName = name,
                     LastName = "",
+                    PasswordHash = "",
+                    Role = "Customer",
                     Metadata = "",
                     Phone = "",
                     ProfileUrl = "",
-                    Status = "true",
+                    Status = "isActive",
+                    DateCreated = DateTime.Now,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
-                    LastLoginAt = DateTime.UtcNow
+                    LastLogin = DateTime.UtcNow
                 };
 
                 _unitOfWork.Users.Create(user);
             }
             else
             {
-                user.LastLoginAt = DateTime.UtcNow;
+                user.LastLogin = DateTime.UtcNow;
                 user.UpdatedAt = DateTime.UtcNow;
                 user.FirstName = name;
                 user.LastName = "";
@@ -93,7 +95,7 @@ namespace PerfumeStore.Service.Service
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                LastLoginAt = user.LastLoginAt
+                LastLoginAt = (DateTime)user.LastLogin
             };
         }
     }

@@ -1,4 +1,4 @@
-﻿using PerfumeStore.Repository.Models;
+﻿using PerfumeStore.Repository.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,24 +9,24 @@ namespace PerfumeStore.Repository
 {
     public class UnitOfWork : IDisposable
     {
-        private PerfumeStoreActivityManagementContext _context;
-        private GenericRepository<Perfume> _perfume;
+        private PerfumeStoreContext _context;
+        private GenericRepository<PerfumeProduct> _perfume;
         private GenericRepository<User> _user;
 
         private bool disposed = false;
 
-        public UnitOfWork(PerfumeStoreActivityManagementContext context)
+        public UnitOfWork(PerfumeStoreContext context)
         {
             _context = context;
         }
 
-        public GenericRepository<Perfume> Perfumes
+        public GenericRepository<PerfumeProduct> Perfumes
         {
             get
             {
                 if (this._perfume == null)
                 {
-                    this._perfume = new GenericRepository<Perfume>(_context);
+                    this._perfume = new GenericRepository<PerfumeProduct>(_context);
                 }
                 return _perfume;
             }

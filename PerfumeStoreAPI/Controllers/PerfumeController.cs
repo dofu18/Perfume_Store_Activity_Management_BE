@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using PerfumeStore.API.RequestModel;
 using PerfumeStore.API.ResponseModel;
-using PerfumeStore.Repository.Models;
+using PerfumeStore.Repository.Model;
 using PerfumeStore.Service.BusinessModel;
 using PerfumeStore.Service.Service;
 using System.Formats.Asn1;
@@ -40,19 +40,23 @@ namespace PerfumeStore.API.Controllers
             var response = new PerfumeResponseModel
             {
                 PerfumeId = perfume.PerfumeId,
+                Name = perfume.Name,
+                Brand = perfume.Brand,
+                Scent = perfume.Scent,
+                Gender = perfume.Gender,
+                StockQuantity = perfume.StockQuantity,
+                Description = perfume.Description,
+                ImageUrl = perfume.ImageUrl,
                 ViewCount = perfume.ViewCount,
                 Origin = perfume.Origin,
                 ReleaseYear = perfume.ReleaseYear,
-                Concentration = perfume.Concentration,
-                Bartender = perfume.Bartender,
-                FlavorGroup = perfume.FlavorGroup,
-                Capacity = perfume.Capacity,
+                Volume = perfume.Volume,
                 Price = perfume.Price,
                 Discount = perfume.Discount,
                 TopNote = perfume.TopNote,
                 MiddleNote = perfume.MiddleNote,
                 BaseNote = perfume.BaseNote,
-                PerfumeEditions = perfume.PerfumeEditions,
+                DateAdded = perfume.DateAdded,
             };
 
             return Ok(response);
@@ -61,21 +65,26 @@ namespace PerfumeStore.API.Controllers
         [HttpPost("perfume")]
         public async Task <ActionResult> CreatePerfume(PerfumeRequestModel req)
         {
-            var perfumeModel = new PerfumeModel
+            var perfumeModel = new PerfumeProductModel
             {
+                PerfumeId = req.PerfumeId,
+                Name = req.Name,
+                Brand = req.Brand,
+                Scent = req.Scent,
+                Gender = req.Gender,
+                StockQuantity = req.StockQuantity,
+                Description = req.Description,
+                ImageUrl = req.ImageUrl,
                 ViewCount = req.ViewCount,
                 Origin = req.Origin,
                 ReleaseYear = req.ReleaseYear,
-                Concentration = req.Concentration,
-                Bartender = req.Bartender,
-                FlavorGroup = req.FlavorGroup,
-                Capacity = req.Capacity,
+                Volume = req.Volume,
                 Price = req.Price,
                 Discount = req.Discount,
                 TopNote = req.TopNote,
                 MiddleNote = req.MiddleNote,
                 BaseNote = req.BaseNote,
-                //PerfumeEditions = req.PerfumeEditions,
+                DateAdded = req.DateAdded,
             };
 
             var rs = await _perfumeService.InsertPerfumeAsync(perfumeModel);
@@ -86,20 +95,26 @@ namespace PerfumeStore.API.Controllers
         [HttpPut("perfume/{id}")]
         public async Task<IActionResult> UpdatePerfume (Guid id, PerfumeRequestModel req)
         {
-            var perfumeModel = new PerfumeModel
+            var perfumeModel = new PerfumeProductModel
             {
+                PerfumeId = req.PerfumeId,
+                Name = req.Name,
+                Brand = req.Brand,
+                Scent = req.Scent,
+                Gender = req.Gender,
+                StockQuantity = req.StockQuantity,
+                Description = req.Description,
+                ImageUrl = req.ImageUrl,
                 ViewCount = req.ViewCount,
                 Origin = req.Origin,
                 ReleaseYear = req.ReleaseYear,
-                Concentration = req.Concentration,
-                Bartender = req.Bartender,
-                FlavorGroup = req.FlavorGroup,
-                Capacity = req.Capacity,
+                Volume = req.Volume,
                 Price = req.Price,
                 Discount = req.Discount,
                 TopNote = req.TopNote,
                 MiddleNote = req.MiddleNote,
                 BaseNote = req.BaseNote,
+                DateAdded = req.DateAdded,
             };
 
             var success = await _perfumeService.UpdatePerfumeAsync(id, perfumeModel);

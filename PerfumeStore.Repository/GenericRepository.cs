@@ -5,22 +5,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PerfumeStore.Repository.Models;
+using PerfumeStore.Repository.Model;
 using System.Linq.Expressions;
 
 namespace PerfumeStore.Repository
 {
     public class GenericRepository<T> where T : class
     {
-        protected PerfumeStoreActivityManagementContext _context;
+        protected PerfumeStoreContext _context;
         private readonly DbSet<T> _dbSet;
 
         public GenericRepository()
         {
-            _context ??= new PerfumeStoreActivityManagementContext();
+            _context ??= new PerfumeStoreContext();
         }
 
-        public GenericRepository(PerfumeStoreActivityManagementContext context)
+        public GenericRepository(PerfumeStoreContext context)
         {
             _context = context;
             _dbSet = _context.Set<T>();

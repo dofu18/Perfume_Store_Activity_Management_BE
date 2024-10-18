@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PerfumeStore.Repository;
-using PerfumeStore.Repository.Models;
+using PerfumeStore.Repository.Model;
 using PerfumeStore.Service.Service;
 using System.Text;
 
@@ -95,7 +95,7 @@ builder.Services.AddCors(options =>
 //builder.Services.AddDbContext<PerfumeStoreActivityManagementContext>(options =>
 //options.UseSqlServer(connectionString));
 
-builder.Services.AddDbContext<PerfumeStoreActivityManagementContext>(options =>
+builder.Services.AddDbContext<PerfumeStoreContext>(options =>
 {
     Console.WriteLine($"Using ConnectionString: {builder.Configuration.GetConnectionString("DatabaseConnection")}");
     options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection"));

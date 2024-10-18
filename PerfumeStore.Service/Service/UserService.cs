@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using PerfumeStore.Repository;
-using PerfumeStore.Repository.Models;
+using PerfumeStore.Repository.Model;
 using PerfumeStore.Service.BusinessModel;
 using System;
 using System.Collections.Generic;
@@ -30,13 +30,16 @@ namespace PerfumeStore.Service.Service
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                PasswordHash = user.PasswordHash,
+                Role = user.Role,
                 Phone = user.Phone,
                 ProfileUrl = user.ProfileUrl,
                 Metadata = user.Metadata,
                 Status = user.Status,
-                LastLoginAt = user.LastLoginAt,
+                LastLogin = user.LastLogin,
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt,
+                DateCreated = user.DateCreated,
             };
         }
 
