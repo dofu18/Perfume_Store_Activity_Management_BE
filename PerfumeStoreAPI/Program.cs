@@ -111,6 +111,7 @@ builder.Services.AddScoped<PerfumeService>();
 builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CartService>();
 
 var app = builder.Build();
 

@@ -33,7 +33,7 @@ namespace PerfumeStore.Repository
             }
         }
 
-        public GenericRepository<PerfumeProduct> Perfumes
+        public GenericRepository<PerfumeProduct> PerfumeProducts
         {
             get
             {
@@ -67,6 +67,10 @@ namespace PerfumeStore.Repository
             _context.SaveChanges();
         }
 
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
 
         protected virtual void Dispose(bool disposing)
         {
