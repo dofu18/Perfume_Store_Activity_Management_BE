@@ -28,7 +28,7 @@ namespace PerfumeStore.API.Controllers
         {
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action("GoogleResponse")
+                RedirectUri = Url.Action("GoogleResponse", "Auth", null, Request.Scheme)
             };
 
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
