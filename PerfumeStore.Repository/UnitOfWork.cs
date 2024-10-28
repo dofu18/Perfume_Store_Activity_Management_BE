@@ -15,6 +15,7 @@ namespace PerfumeStore.Repository
         private GenericRepository<Cart> _cart;
         private GenericRepository<Order> _order;
         private GenericRepository<Transaction> _transaction;
+        private GenericRepository<PerfumeCharacteristic> _characteristic;
 
         private bool disposed = false;
 
@@ -23,6 +24,18 @@ namespace PerfumeStore.Repository
             _context = context;
         }
 
+        public GenericRepository<PerfumeCharacteristic> PerfumeCharacteristics
+        {
+            get
+            {
+                if (this._characteristic == null)
+                {
+                    this._characteristic = new GenericRepository<PerfumeCharacteristic>(_context);
+                }
+                return this._characteristic;
+            }
+        }
+            
         public GenericRepository<Cart> Carts
         {
             get

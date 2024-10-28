@@ -23,7 +23,6 @@ namespace PerfumeStore.API.Controllers
         }
 
         [HttpGet("perfumes")]
-        [Authorize]
         public IActionResult GetPerfume([FromQuery] string? search, [FromQuery] string? sortBy, [FromQuery] bool desc, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             // Get paginated result from the service
