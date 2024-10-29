@@ -27,6 +27,7 @@ namespace PerfumeStore.Service.Service
             
             return new UserModel
             {
+                UserId = user.UserId,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -91,6 +92,54 @@ namespace PerfumeStore.Service.Service
 
             // Apply Paging
             return users.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        }
+
+        public async Task<bool> UpdateUserAsync(Guid id, UpdateUserModel userModel)
+        {
+            //var userToUpdate = await _unitOfWork.Users.GetByIdAsync(id);
+
+            //userToUpdate.FirstName = userModel.FirstName;
+            //userToUpdate.LastName = userModel.LastName;
+            //userToUpdate.Email = userModel.Email;
+            //userToUpdate.PasswordHash = userModel.PasswordHash;
+            //userToUpdate.Role = userModel.Role;
+            //userToUpdate.Phone = userModel.Phone;
+            //userToUpdate.ProfileUrl = userModel.ProfileUrl;
+            //userToUpdate.Metadata = userModel.Metadata;
+            //userToUpdate.Status = userModel.Status;
+            //userToUpdate.UpdatedAt = DateTime.Now;
+
+            //_unitOfWork.Users.Update(userToUpdate);
+            //await _unitOfWork.SaveAsync();
+            //return true;
+            var userToUpdate = await _unitOfWork.Users.GetByIdAsync(id);
+            if (userToUpdate == null) return false;
+
+            // Use reflection to update non-null properties, skipping mismatched types
+            var properties = typeof(UpdateUserModel).GetProperties();
+            foreach (var property in properties)
+            {
+                if (property.Name == nameof(userToUpdate.UserId))
+                {
+                    // Skip updating PerfumeId as it's the primary key and should remain immutable
+                    continue;
+                }
+
+                var newValue = property.GetValue(userModel);
+                if (newValue != null)
+                {
+                    var targetProperty = typeof(User).GetProperty(property.Name);
+                    if (targetProperty != null && targetProperty.PropertyType == property.PropertyType)
+                    {
+                        targetProperty.SetValue(userToUpdate, newValue);
+                    }
+                }
+            }
+
+            userToUpdate.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.Users.Update(userToUpdate);
+            await _unitOfWork.SaveAsync();
+            return true;
         }
     }
 }

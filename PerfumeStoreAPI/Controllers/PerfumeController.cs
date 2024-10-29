@@ -23,7 +23,6 @@ namespace PerfumeStore.API.Controllers
         }
 
         [HttpGet("perfumes")]
-        [Authorize]
         public IActionResult GetPerfume([FromQuery] string? search, [FromQuery] string? sortBy, [FromQuery] bool desc, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             // Get paginated result from the service
@@ -93,11 +92,10 @@ namespace PerfumeStore.API.Controllers
         }
 
         [HttpPut("perfume/{id}")]
-        public async Task<IActionResult> UpdatePerfume (Guid id, PerfumeRequestModel req)
+        public async Task<IActionResult> UpdatePerfume (Guid id, UpdatePerfumeRequestModel req)
         {
-            var perfumeModel = new PerfumeProductModel
+            var perfumeModel = new UpdatePerfumeProductModel
             {
-                PerfumeId = req.PerfumeId,
                 Name = req.Name,
                 Brand = req.Brand,
                 Scent = req.Scent,

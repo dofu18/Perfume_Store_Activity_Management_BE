@@ -28,7 +28,7 @@ namespace PerfumeStore.Service.Service
 
         public async Task<PerfumeProductModel> GetPerfumeByIdAsync(Guid id)
         {
-            var perfume = await _unitOfWork.Perfumes.GetByIdAsync(id);
+            var perfume = await _unitOfWork.PerfumeProducts.GetByIdAsync(id);
             if (perfume == null) return null;
 
             return new PerfumeProductModel
@@ -92,7 +92,7 @@ namespace PerfumeStore.Service.Service
             }
 
             // Apply filtering
-            var perfumes = _unitOfWork.Perfumes.FindByCondition(filter);
+            var perfumes = _unitOfWork.PerfumeProducts.FindByCondition(filter);
 
             // Apply sorting
             if (orderBy != null)
@@ -104,30 +104,55 @@ namespace PerfumeStore.Service.Service
             return perfumes.Skip((page - 1) * pageSize).Take(pageSize).ToList();
         }
 
-        public async Task<bool> UpdatePerfumeAsync(Guid id, PerfumeProductModel perfumeModel)
+        public async Task<bool> UpdatePerfumeAsync(Guid id, UpdatePerfumeProductModel perfumeModel)
         {
-            var perfumeToUpdate = await _unitOfWork.Perfumes.GetByIdAsync(id);
+            //var perfumeToUpdate = await _unitOfWork.PerfumeProducts.GetByIdAsync(id);
 
-            perfumeToUpdate.PerfumeId = perfumeModel.PerfumeId;
-            perfumeToUpdate.Name = perfumeModel.Name;
-            perfumeToUpdate.Brand = perfumeModel.Brand;
-            perfumeToUpdate.Scent = perfumeModel.Scent;
-            perfumeToUpdate.Gender = perfumeModel.Gender;
-            perfumeToUpdate.StockQuantity = perfumeModel.StockQuantity;
-            perfumeToUpdate.Description = perfumeModel.Description;
-            perfumeToUpdate.ImageUrl = perfumeModel.ImageUrl;
-            perfumeToUpdate.ViewCount = perfumeModel.ViewCount;
-            perfumeToUpdate.Origin = perfumeModel.Origin;
-            perfumeToUpdate.ReleaseYear = perfumeModel.ReleaseYear;
-            perfumeToUpdate.Volume = perfumeModel.Volume;
-            perfumeToUpdate.Price = perfumeModel.Price;
-            perfumeToUpdate.Discount = perfumeModel.Discount;
-            perfumeToUpdate.TopNote = perfumeModel.TopNote;
-            perfumeToUpdate.MiddleNote = perfumeModel.MiddleNote;
-            perfumeToUpdate.BaseNote = perfumeModel.BaseNote;
-            perfumeToUpdate.DateAdded = perfumeModel.DateAdded;
+            //perfumeToUpdate.PerfumeId = perfumeModel.PerfumeId;
+            //perfumeToUpdate.Name = perfumeModel.Name;
+            //perfumeToUpdate.Brand = perfumeModel.Brand;
+            //perfumeToUpdate.Scent = perfumeModel.Scent;
+            //perfumeToUpdate.Gender = perfumeModel.Gender;
+            //perfumeToUpdate.StockQuantity = perfumeModel.StockQuantity;
+            //perfumeToUpdate.Description = perfumeModel.Description;
+            //perfumeToUpdate.ImageUrl = perfumeModel.ImageUrl;
+            //perfumeToUpdate.ViewCount = perfumeModel.ViewCount;
+            //perfumeToUpdate.Origin = perfumeModel.Origin;
+            //perfumeToUpdate.ReleaseYear = perfumeModel.ReleaseYear;
+            //perfumeToUpdate.Volume = perfumeModel.Volume;
+            //perfumeToUpdate.Price = perfumeModel.Price;
+            //perfumeToUpdate.Discount = perfumeModel.Discount;
+            //perfumeToUpdate.TopNote = perfumeModel.TopNote;
+            //perfumeToUpdate.MiddleNote = perfumeModel.MiddleNote;
+            //perfumeToUpdate.BaseNote = perfumeModel.BaseNote;
+            //perfumeToUpdate.DateAdded = perfumeModel.DateAdded;
 
-            _unitOfWork.Perfumes.Update(perfumeToUpdate);
+            //_unitOfWork.PerfumeProducts.Update(perfumeToUpdate);
+            //await _unitOfWork.SaveAsync();
+            //return true;
+            var perfumeToUpdate = await _unitOfWork.PerfumeProducts.GetByIdAsync(id);
+            if (perfumeToUpdate == null) return false;
+
+            // Use reflection to update non-null properties
+            var properties = typeof(UpdatePerfumeProductModel).GetProperties();
+            foreach (var property in properties)
+            {
+                if (property.Name == nameof(perfumeToUpdate.PerfumeId))
+                {
+                    // Skip updating PerfumeId as it's the primary key and should remain immutable
+                    continue;
+                }
+
+                var newValue = property.GetValue(perfumeModel);
+                if (newValue != null)
+                {
+                    var targetProperty = typeof(PerfumeProduct).GetProperty(property.Name);
+                    targetProperty?.SetValue(perfumeToUpdate, newValue);
+                }
+            }
+
+            _unitOfWork.PerfumeProducts.Update(perfumeToUpdate);
+            
             await _unitOfWork.SaveAsync();
             return true;
         }
@@ -157,24 +182,24 @@ namespace PerfumeStore.Service.Service
                 DateAdded = perfumeModel.DateAdded,
             };
 
-            await _unitOfWork.Perfumes.CreateAsync(perfumeEntity);
+            await _unitOfWork.PerfumeProducts.CreateAsync(perfumeEntity);
             await _unitOfWork.SaveAsync();
             return perfumeEntity.PerfumeId;
         }
 
         public async Task<bool> DeletePerfumeAsync(Guid id)
         {
-            var perfume = await _unitOfWork.Perfumes.GetByIdAsync(id);
+            var perfume = await _unitOfWork.PerfumeProducts.GetByIdAsync(id);
             if (perfume == null) return false;
 
-            _unitOfWork.Perfumes.Remove(perfume);
+            _unitOfWork.PerfumeProducts.Remove(perfume);
             await _unitOfWork.SaveAsync();
             return true;
         }
 
         public async Task<bool>PerfumeExistAsync(Guid id)
         {
-            return await _unitOfWork.Perfumes.IsExist(id);
+            return await _unitOfWork.PerfumeProducts.IsExist(id);
         }
     }
 }

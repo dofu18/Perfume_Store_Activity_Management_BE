@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,8 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.WebHost.UseIISIntegration();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -43,6 +46,7 @@ builder.Services.AddSwaggerGen(c =>
       }
     });
 });
+
 
 // Add Google authentication
 builder.Services.AddAuthentication(options =>
@@ -101,6 +105,14 @@ builder.Services.AddDbContext<PerfumeStoreContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection"));
 });
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+//builder.Services.AddControllers()
+//    .AddJsonOptions(options =>
+//    {
+//        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+//    });
+
+
 //Security scheme
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication("Bearer").AddBearerToken();
@@ -111,6 +123,15 @@ builder.Services.AddScoped<PerfumeService>();
 builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CartService>();
+builder.Services.AddScoped<PaypalService>();
+builder.Services.AddScoped<OrderService>();
+
+
+//Firebase
+builder.Services.AddSingleton<FirebaseService>();
+
+
 
 var app = builder.Build();
 
@@ -129,6 +150,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
 
 app.UseHttpsRedirection();
 
