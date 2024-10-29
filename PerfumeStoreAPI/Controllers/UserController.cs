@@ -27,6 +27,7 @@ namespace PerfumeStore.API.Controllers
 
             var response = new UserResponseModel
             {
+                UserId = user.UserId,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -56,21 +57,14 @@ namespace PerfumeStore.API.Controllers
         [HttpPut("users/{id}")]
         public async Task<IActionResult> UpdateUser(Guid id, UserRequestModel req)
         {
-            var userModel = new UserModel
+            var userModel = new UpdateUserModel
             {
                 Email = req.Email,
                 FirstName = req.FirstName,
                 LastName = req.LastName,
-                PasswordHash = req.PasswordHash,
-                Role = req.Role,
                 Phone = req.Phone,
                 ProfileUrl = req.ProfileUrl,
                 Metadata = req.Metadata,
-                Status = req.Status,
-                LastLogin = req.LastLogin,
-                CreatedAt = req.CreatedAt,
-                UpdatedAt = req.UpdatedAt,
-                DateCreated = req.DateCreated,
             };
 
             var success = await _userService.UpdateUserAsync(id, userModel);
