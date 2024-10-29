@@ -126,8 +126,11 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<PaypalService>();
 builder.Services.AddScoped<OrderService>();
-//builder.Services.AddAutoMapper(typeof(StartupBase));
-//builder.Services.AddSingleton<IMapper, Mapper>();
+
+
+//Firebase
+builder.Services.AddSingleton<FirebaseService>();
+
 
 
 var app = builder.Build();
