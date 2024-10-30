@@ -127,6 +127,7 @@ builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<PaypalService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ActivityLogService>();
 
 
 //Firebase

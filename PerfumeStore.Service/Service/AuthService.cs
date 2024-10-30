@@ -83,8 +83,6 @@ namespace PerfumeStore.Service.Service
             {
                 user.LastLogin = DateTime.UtcNow;
                 user.UpdatedAt = DateTime.UtcNow;
-                user.FirstName = name;
-                user.LastName = "";
                 _unitOfWork.Users.Update(user);
             }
 

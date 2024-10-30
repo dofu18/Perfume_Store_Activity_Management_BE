@@ -17,12 +17,25 @@ namespace PerfumeStore.Repository
         private GenericRepository<Transaction> _transaction;
         private GenericRepository<PerfumeCharacteristic> _characteristic;
         private GenericRepository<Category> _category;
+        private GenericRepository<ActivityLog> _activityLog;
 
         private bool disposed = false;
 
         public UnitOfWork(PerfumeStoreContext context)
         {
             _context = context;
+        }
+
+        public GenericRepository<ActivityLog> ActivityLogs
+        {
+            get
+            {
+                if (_activityLog == null)
+                {
+                    _activityLog = new GenericRepository<ActivityLog>(_context);
+                }
+                return _activityLog;
+            }
         }
 
         public GenericRepository<Category> Category
