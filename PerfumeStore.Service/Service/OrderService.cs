@@ -136,5 +136,12 @@ namespace PerfumeStore.Service.Service
             }
             return _context.SaveChanges();
         }
+
+        public async Task<List<Order>> GetOrderByUserIdAsync(Guid userId)
+        {
+            return await _unitOfWork.Orders
+                .FindByCondition(c => c.UserId == userId)
+                .ToListAsync();
+        }
     }
 }

@@ -25,6 +25,8 @@ public partial class User
 
     public string Status { get; set; } = null!;
 
+    public string? Address { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }

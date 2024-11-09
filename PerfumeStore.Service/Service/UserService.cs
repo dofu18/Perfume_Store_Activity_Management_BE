@@ -1,7 +1,9 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using PerfumeStore.Repository;
 using PerfumeStore.Repository.Model;
 using PerfumeStore.Service.BusinessModel;
+using PerfumeStore.Service.BusinessModel.CustomResponse;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace PerfumeStore.Service.Service
 {
-    public class UserService
+    public class UserService : BaseService
     {
         private readonly UnitOfWork _unitOfWork;
 
-        public UserService(UnitOfWork unitOfWork)
+        public UserService(UnitOfWork unitOfWork, PerfumeStoreContext dbContext, IHttpContextAccessor httpCtx) : base(httpCtx,dbContext)
         {
             _unitOfWork = unitOfWork;
         }
@@ -39,6 +41,7 @@ namespace PerfumeStore.Service.Service
                 Status = user.Status,
                 LastLogin = user.LastLogin,
                 CreatedAt = user.CreatedAt,
+                Address = user.Address,
                 UpdatedAt = user.UpdatedAt,
                 DateCreated = user.DateCreated,
             };
@@ -46,6 +49,7 @@ namespace PerfumeStore.Service.Service
 
         public IEnumerable<User> GetAllUsers(string search, string sortBy, bool desc, int page, int pageSize)
         {
+
             Expression<Func<User, bool>> filter = null;
 
             if (!string.IsNullOrEmpty(search))

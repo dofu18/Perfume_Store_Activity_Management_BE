@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PerfumeStore.Repository.Enum;
+using System;
 using System.Collections.Generic;
 
 namespace PerfumeStore.Repository.Model;
@@ -11,7 +12,7 @@ public partial class ActivityLog
 
     public Guid PerfumeId { get; set; }
 
-    public string? Action { get; set; }
+    public ActionEnum? Action { get; set; }
 
     public DateTime? Date { get; set; }
 

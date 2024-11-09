@@ -74,7 +74,7 @@ namespace PerfumeStore.API.Controllers
 
         // API to capture a PayPal order
         [HttpPost("capture-order")]
-        public async Task<IActionResult> CaptureOrder(string token, string PayerID, Guid userId, Guid? orderId, string redirectUrl)
+        public async Task<IActionResult> CaptureOrder(string token, string PayerID, Guid userId, Guid orderId, string redirectUrl)
         {
             //var result = await _paypalService.CaptureOrder(token, payerId, userId, redirectUrl);
             //if (!result.Success)

@@ -1,4 +1,6 @@
 using AutoMapper;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -53,7 +55,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 })
 .AddGoogle(options =>
 {
@@ -62,7 +64,6 @@ builder.Services.AddAuthentication(options =>
     options.Scope.Add("email");
     options.CallbackPath = "/signin-google";
 })
-.AddCookie()
 .AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -75,21 +76,37 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
+})
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+    options.Cookie.SameSite = SameSiteMode.Lax; // Lax is typical for OAuth flows
+    options.Cookie.HttpOnly = true;
 });
 
 // Add authorization
 builder.Services.AddAuthorization();
 
 // Add CORS policy
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowSpecificOrigins", builder =>
+//    {
+//        // Specify your allowed origins here
+//        builder.WithOrigins("https://localhost:7036/", "http://perfumestore.somee.com/", "https://perfume-store-blue.vercel.app/", "http://localhost:3000/", "*") // List your actual origins here
+//               .AllowAnyHeader()
+//               .AllowAnyMethod()
+//               .AllowCredentials(); // Allow credentials for Google OAuth
+//    });
+//});
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins", builder =>
+    options.AddPolicy("AllowAll", builder =>
     {
-        // Specify your allowed origins here
-        builder.WithOrigins("https://localhost:7036/", "https://yourfrontenddomain.com") // List your actual origins here
-               .AllowAnyHeader()
-               .AllowAnyMethod()
-               .AllowCredentials(); // Allow credentials for Google OAuth
+        builder
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
@@ -115,7 +132,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //Security scheme
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication("Bearer").AddBearerToken();
+//builder.Services.AddAuthentication("Bearer").AddBearerToken();
 builder.Services.AddHttpContextAccessor();
 
 //Service
@@ -126,23 +143,41 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<PaypalService>();
 builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ActivityLogService>();
 
 
 //Firebase
 builder.Services.AddSingleton<FirebaseService>();
 
+var keyFilePath = Path.Combine(Directory.GetCurrentDirectory(), "serviceAccountKey.json");
+
+
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile(keyFilePath)
+});
 
 
 var app = builder.Build();
 
 app.MapGet("/", async context =>
 {
-    context.Response.Redirect("/swagger/index.html");
+    //context.Response.Redirect("/swagger/index.html");
+    //await Task.CompletedTask;
+    if (app.Environment.IsDevelopment())
+    {
+        context.Response.Redirect("/swagger/index.html");
+    }
+    else
+    {
+        context.Response.Redirect("/home"); // Replace with your actual production home route
+    }
     await Task.CompletedTask;
 });
 
 // Enable CORS for the defined policy
-app.UseCors("AllowSpecificOrigins");
+app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())

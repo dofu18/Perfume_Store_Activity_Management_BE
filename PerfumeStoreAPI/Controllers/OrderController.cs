@@ -33,5 +33,19 @@ namespace PerfumeStore.API.Controllers
 
             return await _orderService.HandleCreateOrder(req, userId);
         }
+
+        [Authorize]
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetOrderByUser(Guid userId)
+        {
+            var activities = await _orderService.GetOrderByUserIdAsync(userId);
+
+            if (activities == null || !activities.Any())
+            {
+                return NotFound("Don't have any activity or user not found.");
+            }
+
+            return Ok(activities);
+        }
     }
 }

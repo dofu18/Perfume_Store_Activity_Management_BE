@@ -25,6 +25,18 @@ namespace PerfumeStore.Service.Service
             return _unitOfWork.Users.GetByCondition(p => p.Email == email);
         }
 
+        public async Task UpdateUserAsync(User user)
+        {
+            // Update user details in your database
+            await _unitOfWork.Users.UpdateAsync(user);
+        }
+
+        public async Task CreateUserAsync(User user)
+        {
+            // Create a new user in your database
+            await _unitOfWork.Users.CreateAsync(user);
+        }
+
         public User HandleGoogleLogin(GoogleJsonWebSignature.Payload payload)
         {
             // Check if the user already exists in the database
@@ -53,7 +65,7 @@ namespace PerfumeStore.Service.Service
             return user;
         }
 
-        public async Task<BusinessModel.UserAuthModel> AuthenticateGoogleUser(string email, string name)
+        public async Task<BusinessModel.UserModel> AuthenticateGoogleUser(string email, string name)
         {
             var user = _unitOfWork.Users.GetByCondition(u => u.Email == email);
 
@@ -83,19 +95,26 @@ namespace PerfumeStore.Service.Service
             {
                 user.LastLogin = DateTime.UtcNow;
                 user.UpdatedAt = DateTime.UtcNow;
-                user.FirstName = name;
-                user.LastName = "";
                 _unitOfWork.Users.Update(user);
             }
 
             await _unitOfWork.SaveAsync();
 
-            return new UserAuthModel
+            return new UserModel
             {
+                UserId = user.UserId,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                LastLoginAt = (DateTime)user.LastLogin
+                Role = user.Role,
+                PasswordHash = user.PasswordHash,
+                Phone = user.Phone,
+                ProfileUrl = user.ProfileUrl,
+                Metadata = user.Metadata,
+                Address = user.Address,
+                Status = user.Status,
+                DateCreated = user.DateCreated,
+                LastLogin = (DateTime)user.LastLogin
             };
         }
     }
