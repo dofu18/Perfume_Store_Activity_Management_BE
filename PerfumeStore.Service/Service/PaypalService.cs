@@ -25,7 +25,7 @@ namespace PerfumeStore.Service.Service
         private readonly ILogger<PaypalService> _logger;
         private readonly OrderService _orderService;
 
-        public PaypalService(PerfumeStoreContext dbContext, OrderService orderService, IConfiguration configuration, UnitOfWork unitOfWork, IHttpContextAccessor httpCtx, ILogger<PaypalService> logger) : base(dbContext, httpCtx)
+        public PaypalService(PerfumeStoreContext dbContext, OrderService orderService, IConfiguration configuration, UnitOfWork unitOfWork, IHttpContextAccessor httpCtx, ILogger<PaypalService> logger) : base(httpCtx, dbContext)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -116,7 +116,7 @@ namespace PerfumeStore.Service.Service
         }
 
         // Method to capture the PayPal order
-        public async Task<IActionResult> CaptureOrder(string token, string payerId, Guid userId, Guid? orderId, string redirectUrl)
+        public async Task<IActionResult> CaptureOrder(string token, string payerId, Guid userId, Guid orderId, string redirectUrl)
         {
             var request = new OrdersCaptureRequest(token);
             request.RequestBody(new OrderActionRequest());
@@ -155,7 +155,7 @@ namespace PerfumeStore.Service.Service
                         var transaction = new Repository.Model.Transaction
                         {
                             TransactionId = Guid.NewGuid(),
-                            OrderId = (Guid)orderId,
+                            OrderId = orderId,
                             //OrderId = (Guid)orderId,
                             PaymentMethod = "Paypal",
                             PaymentStatus = "Success",
@@ -167,7 +167,7 @@ namespace PerfumeStore.Service.Service
                     });
                 }
 
-                if (orderId.HasValue && orderId != Guid.Empty)
+                if (orderId != Guid.Empty)
                 {
                     await Task.Run(async () =>
                     {

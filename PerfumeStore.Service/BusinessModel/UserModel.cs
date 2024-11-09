@@ -34,6 +34,8 @@ namespace PerfumeStore.Service.BusinessModel
 
         public string? Metadata { get; set; }
 
+        public string? Address { get; set; }
+
         public string Status { get; set; } = null!;
 
         public DateTime CreatedAt { get; set; }
@@ -43,6 +45,11 @@ namespace PerfumeStore.Service.BusinessModel
         public DateTime? DateCreated { get; set; }
 
         public DateTime? LastLogin { get; set; }
+
+        //public static implicit operator UserModel(UserModel v)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 
     public class UpdateUserModel
@@ -59,5 +66,7 @@ namespace PerfumeStore.Service.BusinessModel
         public string? ProfileUrl { get; set; }
 
         public string? Metadata { get; set; }
+
+        public string? Address { get; set; }
     }
 }

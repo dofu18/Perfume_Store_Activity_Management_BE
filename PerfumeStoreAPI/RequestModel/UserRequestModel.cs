@@ -14,5 +14,7 @@
         public string? ProfileUrl { get; set; }
 
         public string? Metadata { get; set; }
+
+        public string? Address { get; set; }
     }
 }

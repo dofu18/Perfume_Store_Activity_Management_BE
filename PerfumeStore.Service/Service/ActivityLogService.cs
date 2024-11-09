@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using PerfumeStore.Service.BusinessModel;
 using Microsoft.AspNetCore.Mvc;
 using PerfumeStore.Service.BusinessModel.CustomResponse;
+using PerfumeStore.Repository.Enum;
 
 namespace PerfumeStore.Service.Service
 {
@@ -65,19 +66,20 @@ namespace PerfumeStore.Service.Service
             return false;
         }
 
-        public async Task<IActionResult> UpdateActivityLogAsync(Guid id, string categoryName)
+        public async Task<IActionResult> UpdateActivityLogAsync(Guid activityId, string notes, ActionEnum action)
         {
             try
             {
-                var categoryToUpdate = await _unitOfWork.Category.GetByIdAsync(id);
-                if (categoryToUpdate == null) return ErrorResp.NotFound("Category not found");
+                var activityToUpdate = await _unitOfWork.ActivityLogs.GetByIdAsync(activityId);
+                if (activityToUpdate == null) return ErrorResp.NotFound("Activity not found");
 
-                categoryToUpdate.CategoryName = categoryName;
+                activityToUpdate.Notes = notes;
+                activityToUpdate.Action = action;
 
-                _unitOfWork.Category.Update(categoryToUpdate);
+                _unitOfWork.ActivityLogs.Update(activityToUpdate);
 
                 await _unitOfWork.SaveAsync();
-                return SuccessResp.Ok("Update Category Successfully");
+                return SuccessResp.Ok("Update activity Successfully");
             }
             catch (Exception ex)
             {

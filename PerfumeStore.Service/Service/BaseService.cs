@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using PerfumeStore.Repository.Model;
+using PerfumeStore.Service.BusinessModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,18 +16,18 @@ namespace PerfumeStore.Service.Service
         protected readonly IHttpContextAccessor _httpCtx;
 
 
-        public BaseService(PerfumeStoreContext dbContext, IHttpContextAccessor httpCtx)
+        public BaseService(IHttpContextAccessor httpCtx, PerfumeStoreContext dbContext)
         {
             _dbContext = dbContext;
             _httpCtx = httpCtx;
         }
 
-        //protected Payload? ExtractPayload()
-        //{
-        //    var ctx = _httpCtx.HttpContext;
-        //    if (ctx == null) return null;
-        //    var payload = ctx.Items[JwtConst.PAYLOAD_KEY] as Payload;
-        //    return payload;
-        //}
+        protected JwtPayload? ExtractPayload()
+        {
+            var ctx = _httpCtx.HttpContext;
+            if (ctx == null) return null;
+            var payload = ctx.Items["payload"] as JwtPayload;
+            return payload;
+        }
     }
 }

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PerfumeStore.Service.BusinessModel.Enum
+namespace PerfumeStore.Repository.Enum
 {
     public enum ActionEnum
     {
-        Rating,
-        UpdateAt,
-        Name
+        Reviewed,
+        Used,
+        Rated
     }
 }

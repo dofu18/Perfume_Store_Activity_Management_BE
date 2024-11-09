@@ -65,6 +65,7 @@ namespace PerfumeStore.API.Controllers
                 Phone = req.Phone,
                 ProfileUrl = req.ProfileUrl,
                 Metadata = req.Metadata,
+                Address = req.Address,
             };
 
             var success = await _userService.UpdateUserAsync(id, userModel);

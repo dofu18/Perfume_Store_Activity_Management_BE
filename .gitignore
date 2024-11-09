@@ -9,3 +9,5 @@
 ./Perfume_Store_Activity_Management_Backend.csproj
 
 ./appsettings.json
+
+./serviceAccountKey.json
